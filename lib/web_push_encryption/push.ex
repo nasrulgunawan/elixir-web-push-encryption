@@ -26,7 +26,7 @@ defmodule WebPushEncryption.Push do
 
   ## Return value
 
-  Returns the result of `HTTPoison.post`
+  Returns the result of `Req.post`
   """
   @spec send_web_push(
           message :: binary,
@@ -63,17 +63,20 @@ defmodule WebPushEncryption.Push do
       |> Map.put("Crypto-Key", "dh=#{ub64(payload.server_public_key)};" <> headers["Crypto-Key"])
 
     {endpoint, headers} = make_request_params(endpoint, headers, auth_token)
-    options = [
-      ssl: [
-        verify: :verify_peer,
-        cacerts: :public_key.cacerts_get(),
-        versions: [:"tlsv1.2"],
-        customize_hostname_check: [
-          match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+    http_client().post(endpoint,
+      body: payload.ciphertext,
+      headers: headers,
+      connect_options: [
+        transport_opts: [
+          verify: :verify_peer,
+          cacerts: :public_key.cacerts_get(),
+          versions: [:"tlsv1.2"],
+          customize_hostname_check: [
+            match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+          ]
         ]
       ]
-    ]
-    http_client().post(endpoint, payload.ciphertext, headers, options)
+    )
   end
 
   def send_web_push(_message, _subscription, _auth_token, _ttl) do
@@ -109,6 +112,6 @@ defmodule WebPushEncryption.Push do
   end
 
   defp http_client() do
-    Application.get_env(:web_push_encryption, :http_client, HTTPoison)
+    Application.get_env(:web_push_encryption, :http_client, Req)
   end
 end

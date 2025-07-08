@@ -4,18 +4,18 @@ defmodule WebPushEncryption.PushTest do
   alias WebPushEncryption.Push
 
   setup_all do
-    {:ok, _pid} = HTTPoisonSandbox.start_link(:ok)
+    {:ok, _pid} = ReqSandbox.start_link(:ok)
     :ok
   end
 
   setup do
-    HTTPoisonSandbox.reset_requests!()
+    ReqSandbox.reset_requests!()
     :ok
   end
 
   test "normal endpoint with auth_token" do
     Push.send_web_push(Fixtures.example_input(), Fixtures.valid_subscription())
-    assert Enum.count(HTTPoisonSandbox.requests()) == 1
+    assert Enum.count(ReqSandbox.requests()) == 1
   end
 
   test "gcm endpoint without auth_token" do
@@ -26,11 +26,11 @@ defmodule WebPushEncryption.PushTest do
 
   test "gcm endpoint with auth_token" do
     Push.send_web_push(Fixtures.example_input(), Fixtures.valid_gcm_subscription(), "auth_token")
-    assert Enum.count(HTTPoisonSandbox.requests()) == 1
+    assert Enum.count(ReqSandbox.requests()) == 1
   end
 
   test "fcm endpoint with auth_token" do
     Push.send_web_push(Fixtures.example_input(), Fixtures.valid_fcm_subscription(), "auth_token")
-    assert Enum.count(HTTPoisonSandbox.requests()) == 1
+    assert Enum.count(ReqSandbox.requests()) == 1
   end
 end

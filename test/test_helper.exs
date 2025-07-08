@@ -35,16 +35,26 @@ defmodule Fixtures do
   end
 end
 
-defmodule HTTPoisonSandbox do
-  use HTTPoison.Base
-
+defmodule ReqSandbox do
   def start_link(_) do
     Agent.start_link(fn -> [] end, name: __MODULE__)
   end
 
-  def request(method, url, body \\ "", headers \\ [], options \\ []) do
-    req = %{method: method, url: url, body: body, headers: headers, options: options}
+  def post(url, opts \\ []) do
+    body = Keyword.get(opts, :body, "")
+    headers = Keyword.get(opts, :headers, [])
+    connect_options = Keyword.get(opts, :connect_options, [])
+    
+    req = %{
+      method: :post,
+      url: url,
+      body: body,
+      headers: headers,
+      connect_options: connect_options
+    }
+    
     Agent.update(__MODULE__, &[req | &1])
+    {:ok, %{status: 200, body: "OK"}}
   end
 
   def requests() do

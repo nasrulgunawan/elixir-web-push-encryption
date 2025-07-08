@@ -8,4 +8,4 @@ config :web_push_encryption, :vapid_details,
     "BDntLA3k5K1tsrFOXXAuS_9Ey30jxy-R2CAosC2DOQnTs8LpQGxpTEx3AcPXinVYFFpJI6tT_RJC8pHgUsdbhOk",
   private_key: "RVPPDBVNmJtSLoZ28jE1SumpG4HyhhCPfcix3bvxbLw"
 
-config :web_push_encryption, http_client: HTTPoisonSandbox
+config :web_push_encryption, http_client: ReqSandbox
