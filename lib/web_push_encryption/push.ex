@@ -85,16 +85,16 @@ defmodule WebPushEncryption.Push do
   end
 
   defp make_request_params(endpoint, headers, auth_token) do
-    cond do
-      gcm_url?(endpoint) ->
-        {make_gcm_endpoint(endpoint), headers |> Map.merge(fcm_gcm_authorization(auth_token))}
+    # cond do
+    #   gcm_url?(endpoint) ->
+    #     {make_gcm_endpoint(endpoint), headers |> Map.merge(fcm_gcm_authorization(auth_token))}
 
-      fcm_url?(endpoint) and not is_nil(auth_token) ->
-        {endpoint, headers |> Map.merge(fcm_gcm_authorization(auth_token))}
+    #   fcm_url?(endpoint) and not is_nil(auth_token) ->
+    #     {endpoint, headers |> Map.merge(fcm_gcm_authorization(auth_token))}
 
-      true ->
+    #   true ->
         {endpoint, headers}
-    end
+    # end
   end
 
   defp make_audience(endpoint) do
